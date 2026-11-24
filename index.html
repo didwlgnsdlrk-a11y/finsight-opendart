@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>양지훈 | 홀로그램 디지털 명함</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #a78bfa;
+      --primary-soft: rgba(243, 232, 255, 0.85);
+      --text-main: #2e1065;
+      --text-sub: #6b21a8;
+      --text-muted: #6e598f;
+      --line-color: rgba(168, 85, 247, 0.45);
+      --mx: 50%;
+      --my: 50%;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 보랏빛 기반 다채로운 파스텔 홀로그램 애니메이션 배경 */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 16px;
+      font-family: 'Noto Sans KR', 'Poppins', sans-serif;
+      color: var(--text-main);
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(
+        -45deg,
+        #f3e8ff,
+        #e0e7ff,
+        #fae8ff,
+        #ddd6fe,
+        #cffafe,
+        #f5d0fe
+      );
+      background-size: 400% 400%;
+      animation: holoBgFlow 12s ease infinite;
+    }
+
+    @keyframes holoBgFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* 배경 둥글둥글 무지갯빛 오로라 오브 */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(55px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.78;
+      animation: floatOrb 9s ease-in-out infinite;
+    }
+    .blob-1 {
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, #d8b4fe 0%, #818cf8 70%, transparent 100%);
+      top: -90px;
+      left: -80px;
+    }
+    .blob-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #f0abfc 0%, #a5f3fc 75%, transparent 100%);
+      bottom: -80px;
+      right: -70px;
+      animation-delay: -4.5s;
+    }
+    .blob-3 {
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, #c4b5fd 0%, #fbcfe8 75%, transparent 100%);
+      top: 55%;
+      left: 10%;
+      animation-delay: -2s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) scale(1) rotate(0deg); }
+      50% { transform: translateY(-18px) scale(1.06) rotate(12deg); }
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      perspective: 1200px;
+    }
+
+    /* 홀로그램 무지개 테두리 래퍼 */
+    .holo-frame {
+      width: 100%;
+      padding: 3.5px;
+      border-radius: 38px;
+      background: linear-gradient(
+        125deg,
+        #a855f7,
+        #ec4899,
+        #38bdf8,
+        #8b5cf6,
+        #f472b6,
+        #a78bfa
+      );
+      background-size: 300% 300%;
+      animation: holoBorderShift 6s ease infinite;
+      box-shadow:
+        0 26px 60px rgba(124, 58, 237, 0.24),
+        0 8px 24px rgba(236, 72, 153, 0.14);
+      transition: transform 0.2s ease-out, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes holoBorderShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* 가로형 명함 본체 */
+    .business-card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 870 / 531;
+      min-height: 345px;
+      border-radius: 35px;
+      padding: 40px 46px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(233, 213, 255, 0.92), transparent 55%),
+        radial-gradient(circle at 85% 25%, rgba(207, 250, 254, 0.85), transparent 50%),
+        radial-gradient(circle at 75% 85%, rgba(250, 232, 255, 0.92), transparent 55%),
+        radial-gradient(circle at 25% 80%, rgba(224, 231, 255, 0.88), transparent 50%),
+        rgba(255, 255, 255, 0.94);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* 홀로그램 무지갯빛 프리즘 광택 레이어 (마우스 반응 + 자동 유영) */
+    .holo-sheen {
+      position: absolute;
+      inset: 0;
+      border-radius: 35px;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(
+          circle 320px at var(--mx) var(--my),
+          rgba(255, 255, 255, 0.72) 0%,
+          rgba(216, 180, 254, 0.38) 28%,
+          rgba(125, 211, 252, 0.28) 52%,
+          rgba(244, 114, 182, 0.22) 72%,
+          transparent 100%
+        ),
+        linear-gradient(
+          115deg,
+          transparent 20%,
+          rgba(192, 132, 252, 0.22) 36%,
+          rgba(56, 189, 248, 0.22) 48%,
+          rgba(244, 114, 182, 0.22) 60%,
+          rgba(167, 139, 250, 0.22) 72%,
+          transparent 85%
+        );
+      background-size: 100% 100%, 250% 250%;
+      mix-blend-mode: overlay;
+      animation: holoShimmer 7s ease-in-out infinite;
+    }
+
+    /* 은은한 프리즘 도트 패턴 오버레이 */
+    .holo-pattern {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image: radial-gradient(rgba(139, 92, 246, 0.2) 1.5px, transparent 1.5px);
+      background-size: 18px 18px;
+      opacity: 0.65;
+    }
+
+    @keyframes holoShimmer {
+      0% { background-position: 0% 0%, 0% 50%; }
+      50% { background-position: 0% 0%, 100% 50%; }
+      100% { background-position: 0% 0%, 0% 50%; }
+    }
+
+    .top-section,
+    .bottom-section {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 상단 좌측 영역 */
+    .top-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .identity-block {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    /* 제주대 심볼 홀로그램 박스 */
+    .jnu-emblem {
+      width: 64px;
+      height: 64px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #f3e8ff 0%, #e0f2fe 50%, #fae8ff 100%);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow:
+        0 8px 20px rgba(139, 92, 246, 0.22),
+        0 0 14px rgba(56, 189, 248, 0.18);
+    }
+
+    .vertical-divider {
+      width: 3.5px;
+      height: 52px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #8b5cf6, #ec4899, #38bdf8);
+      flex-shrink: 0;
+    }
+
+    .name-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .name {
+      font-size: 31px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #2e1065 0%, #6d28d9 55%, #a21caf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.6px;
+      line-height: 1.15;
+    }
+
+    .en-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #8b5cf6;
+      letter-spacing: 0.8px;
+    }
+
+    .role {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+
+    /* 우측 상단 홀로그램 뱃지 */
+    .univ-pill {
+      background: linear-gradient(135deg, rgba(243, 232, 255, 0.9), rgba(224, 242, 254, 0.9), rgba(250, 232, 255, 0.9));
+      color: #6d28d9;
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.14);
+      white-space: nowrap;
+    }
+
+    /* 하단 영역 */
+    .bottom-section {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    /* 좌측 하단 홀로그램 QR 코드 박스 */
+    .qr-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 12px;
+      border-radius: 24px;
+      border: 2px solid rgba(233, 213, 255, 0.9);
+      box-shadow:
+        0 8px 22px rgba(124, 58, 237, 0.14),
+        0 0 12px rgba(56, 189, 248, 0.12);
+      cursor: pointer;
+      transition: transform 0.25s ease;
+    }
+
+    .qr-box:hover {
+      transform: scale(1.05);
+    }
+
+    .qr-caption {
+      font-size: 11px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #7c3aed, #db2777);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.2px;
+    }
+
+    /* 우측 하단 우정렬 정보 리스트 */
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .contact-row:hover {
+      transform: translateX(-4px);
+    }
+
+    .contact-text {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .contact-primary {
+      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .contact-secondary {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .row-divider {
+      width: 2.5px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #a855f7, #38bdf8);
+      flex-shrink: 0;
+    }
+
+    .row-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 55%, #38bdf8 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 5px 14px rgba(139, 92, 246, 0.28);
+    }
+
+    /* 하단 원터치 버튼 바 */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6 0%, #c026d3 55%, #0284c7 100%);
+      background-size: 200% 200%;
+      animation: holoBorderShift 5s ease infinite;
+      color: #ffffff;
+      box-shadow: 0 8px 22px rgba(139, 92, 246, 0.34);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(139, 92, 246, 0.44);
+    }
+
+    .btn-soft {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      color: var(--primary);
+      border: 1.5px solid rgba(233, 213, 255, 0.95);
+      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.1);
+    }
+
+    .btn-soft:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: linear-gradient(135deg, #4c1d95, #86198f);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 999px;
+      box-shadow: 0 10px 25px rgba(76, 29, 149, 0.32);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .business-card {
+        aspect-ratio: auto;
+        padding: 28px 24px;
+        border-radius: 30px;
+        gap: 28px;
+      }
+
+      .holo-frame {
+        border-radius: 33px;
+      }
+
+      .top-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .univ-pill {
+        align-self: flex-start;
+      }
+
+      .bottom-section {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .qr-box {
+        align-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <main class="wrapper">
+    <div class="holo-frame" id="holo-card">
+      <section class="business-card" aria-label="양지훈 홀로그램 디지털 명함">
+        <div class="holo-pattern" aria-hidden="true"></div>
+        <div class="holo-sheen" aria-hidden="true"></div>
+
+        <!-- 상단 좌측: 제주대 홀로그램 심볼 + 세로선 + 이름 & 소속 -->
+        <div class="top-section">
+          <div class="identity-block">
+            <div class="jnu-emblem" title="제주대학교 홀로그램 심볼">
+              <svg width="46" height="46" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="제주대학교 홀로그램 로고">
+                <circle cx="50" cy="50" r="43" stroke="url(#jnuHoloRing)" stroke-width="5" stroke-dasharray="175 18" stroke-linecap="round"/>
+                <!-- 한라산 홀로그램 실루엣 -->
+                <path d="M22 61C31 61 38 35 50 35C62 35 69 61 78 61H22Z" fill="url(#jnuHoloMountain)"/>
+                <path d="M44 39.5C46.5 41.5 53.5 41.5 56 39.5C54 36.5 52 35 50 35C48 35 46 36.5 44 39.5Z" fill="#ffffff"/>
+                <!-- 제주 바다 홀로그램 웨이브 -->
+                <path d="M24 67C31 63 38 71 45 67C52 63 59 71 66 67C71 64.5 74 66 76 67" stroke="url(#jnuHoloWave)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M30 74C36 71 42 77 48 74C54 71 60 77 66 74" stroke="#f472b6" stroke-width="3.5" stroke-linecap="round"/>
+                <circle cx="50" cy="22" r="4" fill="#38bdf8"/>
+                <defs>
+                  <linearGradient id="jnuHoloRing" x1="8" y1="8" x2="92" y2="92" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#8b5cf6"/>
+                    <stop offset="50%" stop-color="#ec4899"/>
+                    <stop offset="100%" stop-color="#38bdf8"/>
+                  </linearGradient>
+                  <linearGradient id="jnuHoloMountain" x1="25" y1="35" x2="75" y2="62" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="55%" stop-color="#c084fc"/>
+                    <stop offset="100%" stop-color="#38bdf8"/>
+                  </linearGradient>
+                  <linearGradient id="jnuHoloWave" x1="24" y1="67" x2="76" y2="67" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="100%" stop-color="#06b6d4"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <div class="vertical-divider" aria-hidden="true"></div>
+
+            <div class="name-group">
+              <div class="name-row">
+                <h1 class="name">양지훈</h1>
+                <span class="en-name">Yang Ji-Hoon</span>
+              </div>
+              <p class="role">제주대학교 4학년</p>
+            </div>
+          </div>
+
+          <div class="univ-pill">JEJU NATIONAL UNIV.</div>
+        </div>
+
+        <!-- 하단 좌측 홀로그램 QR 코드 + 하단 우측 연락처/소속/위치 -->
+        <div class="bottom-section">
+          <div class="qr-box" onclick="saveVCard()" title="클릭하면 연락처가 저장됩니다">
+            <svg width="86" height="86" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="연락처 저장 홀로그램 QR 코드">
+              <defs>
+                <linearGradient id="qrHoloGrad" x1="0" y1="0" x2="84" y2="84" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#7c3aed"/>
+                  <stop offset="50%" stop-color="#d946ef"/>
+                  <stop offset="100%" stop-color="#0ea5e9"/>
+                </linearGradient>
+              </defs>
+              <rect width="84" height="84" rx="12" fill="#faf5ff"/>
+              <rect x="8" y="8" width="22" height="22" rx="6" stroke="url(#qrHoloGrad)" stroke-width="4"/>
+              <rect x="15" y="15" width="8" height="8" rx="2.5" fill="url(#qrHoloGrad)"/>
+              <rect x="54" y="8" width="22" height="22" rx="6" stroke="url(#qrHoloGrad)" stroke-width="4"/>
+              <rect x="61" y="15" width="8" height="8" rx="2.5" fill="url(#qrHoloGrad)"/>
+              <rect x="8" y="54" width="22" height="22" rx="6" stroke="url(#qrHoloGrad)" stroke-width="4"/>
+              <rect x="15" y="61" width="8" height="8" rx="2.5" fill="url(#qrHoloGrad)"/>
+              <rect x="37" y="10" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="44" y="16" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="37" y="23" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="10" y="37" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="18" y="42" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="26" y="37" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="37" y="37" width="10" height="10" rx="3" fill="url(#qrHoloGrad)"/>
+              <rect x="52" y="37" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="60" y="42" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="69" y="37" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="37" y="53" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="45" y="60" width="5" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="54" y="54" width="6" height="6" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="65" y="54" width="9" height="5" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="54" y="65" width="5" height="9" rx="2" fill="url(#qrHoloGrad)"/>
+              <rect x="64" y="64" width="10" height="10" rx="3" fill="url(#qrHoloGrad)"/>
+            </svg>
+            <span class="qr-caption">연락처 저장 QR</span>
+          </div>
+
+          <div class="contact-list">
+            <div class="contact-row" onclick="copyPhone()" title="클릭하여 전화번호 복사">
+              <div class="contact-text">
+                <span class="contact-primary" id="phone-number">010-0000-0000</span>
+                <span class="contact-secondary">+82 10-0000-0000 · 터치하여 복사</span>
+              </div>
+              <div class="row-divider" aria-hidden="true"></div>
+              <div class="row-icon" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="contact-row">
+              <div class="contact-text">
+                <span class="contact-primary">제주대학교 4학년</span>
+                <span class="contact-secondary">Jeju National University</span>
+              </div>
+              <div class="row-divider" aria-hidden="true"></div>
+              <div class="row-icon" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="contact-row">
+              <div class="contact-text">
+                <span class="contact-primary">제주특별자치도 제주시 제주대학로 102</span>
+                <span class="contact-secondary">Jeju-si, Jeju-do, Republic of Korea</span>
+              </div>
+              <div class="row-divider" aria-hidden="true"></div>
+              <div class="row-icon" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 하단 원터치 버튼 바 -->
+    <div class="action-bar">
+      <a href="tel:010-0000-0000" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        전화 걸기
+      </a>
+      <button type="button" class="btn btn-soft" onclick="copyPhone()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="3" ry="3"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        번호 복사
+      </button>
+      <button type="button" class="btn btn-soft" onclick="saveVCard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        연락처 저장 (.vcf)
+      </button>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* 마우스 움직임에 따라 홀로그램 빛 반사 및 3D 틸트 반응 */
+    const holoCard = document.getElementById('holo-card');
+    holoCard.addEventListener('mousemove', (e) => {
+      const rect = holoCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const px = (x / rect.width) * 100;
+      const py = (y / rect.height) * 100;
+
+      holoCard.style.setProperty('--mx', `${px}%`);
+      holoCard.style.setProperty('--my', `${py}%`);
+
+      const rotateY = ((x / rect.width) - 0.5) * 8;
+      const rotateX = (0.5 - (y / rect.height)) * 8;
+      holoCard.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    holoCard.addEventListener('mouseleave', () => {
+      holoCard.style.setProperty('--mx', '50%');
+      holoCard.style.setProperty('--my', '50%');
+      holoCard.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2200);
+    }
+
+    function copyPhone() {
+      const phone = document.getElementById('phone-number').textContent.trim();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(phone).then(() => {
+          showToast('전화번호(010-0000-0000)가 복사되었습니다!');
+        });
+      } else {
+        const temp = document.createElement('input');
+        temp.value = phone;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast('전화번호(010-0000-0000)가 복사되었습니다!');
+      }
+    }
+
+    function saveVCard() {
+      const vcard = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'N:양;지훈;;;',
+        'FN:양지훈',
+        'ORG:제주대학교',
+        'TITLE:4학년',
+        'TEL;TYPE=CELL,VOICE:010-0000-0000',
+        'ADR;TYPE=WORK:;;제주대학로 102;제주시;제주특별자치도;;대한민국',
+        'END:VCARD'
+      ].join('\n');
+
+      const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '양지훈_디지털명함.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('연락처 파일(.vcf)이 다운로드됩니다!');
+    }
+  </script>
+</body>
+</html>
